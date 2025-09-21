@@ -12,7 +12,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 
 // Routes
-// app.use("/auth", require("./routes/auth"));
+app.use("/auth", require("./routes/auth"));
 // app.use("/resources", require("./routes/resources"));
 // app.use("/progress", require("./routes/progress"));
 // app.use("/search", require("./routes/search"));
