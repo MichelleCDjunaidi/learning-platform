@@ -19,7 +19,7 @@ app.use(
 
 // Routes
 app.use("/api/auth", require("./routes/auth"));
-// app.use("/resources", require("./routes/resources"));
+app.use("/api/resources", require("./routes/resources"));
 // app.use("/progress", require("./routes/progress"));
 // app.use("/search", require("./routes/search"));
 
