@@ -1,50 +1,64 @@
-const db = require("../db/connection");
+const pool = require("../db/connection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-//registration
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ error: "Email and password required" });
+
   try {
-    const hashed = await bcrypt.hash(password, 10);
-    await db.query("INSERT INTO users (email, password) VALUES ($1, $2)", [
-      email,
-      hashed,
-    ]);
-    res.status(201).json({ message: "User registered" });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
+      [username, email, hashedPassword]
+    );
+    const token = jwt.sign({ id: result.rows[0].id }, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+    res.json({ token });
   } catch (err) {
+    console.error("Registration error:", err);
     res.status(500).json({ error: "Registration failed" });
   }
 };
 
-//login
 const login = async (req, res) => {
-  //given
   const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ error: "Email and password required" });
+
   try {
-    const result = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
-    if (result.rows.length === 0) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    // Pull id + hashed password from DB
+    const { rows } = await pool.query(
+      "SELECT id, email, password_hash FROM users WHERE email = $1",
+      [email]
+    );
 
-    const user = result.rows[0];
-    // store password as hashed with bcrypt
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    if (rows.length === 0)
+      return res
+        .status(400)
+        .json({ error: "Invalid credentials: email not found" });
 
+    const user = rows[0];
+
+    // Compare provided password with stored hash
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) return res.status(400).json({ error: "Invalid credentials" });
+
+    // Generate JWT with user id + email
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
     );
-    res.json({ token });
+
+    res.json({ token, user: { id: user.id, email: user.email } });
   } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ error: "Login failed" });
   }
 };
 
-//exported to auth.js
 module.exports = { register, login };

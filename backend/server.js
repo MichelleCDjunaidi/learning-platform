@@ -8,11 +8,17 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Routes
-app.use("/auth", require("./routes/auth"));
+app.use("/api/auth", require("./routes/auth"));
 // app.use("/resources", require("./routes/resources"));
 // app.use("/progress", require("./routes/progress"));
 // app.use("/search", require("./routes/search"));
