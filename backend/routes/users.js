@@ -5,6 +5,6 @@ const auth = require("../middleware/auth");
 
 // better options
 router.use("/:userId/saved_resources", require("./savedResources"));
-// router.use("/:userId/progress", require("./progress"));
+router.use("/:userId/progress", require("./progress"));
 
 module.exports = router;
