@@ -21,8 +21,7 @@ app.use(
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/resources", require("./routes/resources"));
 app.use("/api/users", require("./routes/users"));
-// app.use("/progress", require("./routes/progress"));
-// app.use("/search", require("./routes/search"));
+app.use("/api/external", require("./routes/externalRoutes"));
 
 // Health check
 app.get("/", (req, res) => res.send("🚀 Backend is running"));

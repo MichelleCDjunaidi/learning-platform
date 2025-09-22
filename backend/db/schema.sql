@@ -29,7 +29,7 @@ CREATE TABLE progress (
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   resource_id INT NOT NULL REFERENCES resources(id) ON DELETE CASCADE,
   status VARCHAR(50),
-  percent INT,
+  percent INT DEFAULT 0,
   notes TEXT,
   updated_at TIMESTAMP DEFAULT NOW(),
   UNIQUE (user_id, resource_id)
