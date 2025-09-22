@@ -92,6 +92,11 @@ Axios handles API requests and JWT-based authentication headers. State is manage
 
 User registers or logs in via `/api/auth` endpoints. Server returns a JWT; frontend stores it in localStorage.
 
+![screenshot](README_img/login.png)
+![screenshot](README_img/login_success.png)
+
+User can then go to dashboard.
+
 2. Resource Discovery & Search
 
 Users search external resources (in this case, YouTube) via /api/external/youtube. Backend fetches from YouTube, formats results, and returns JSON.
@@ -135,8 +140,8 @@ List Resources currently shows crowdsourced resources e.g. what other students f
 
 Some APIs like the progress API is currently not utilized in the frontend, reserved for future development. Password currently has no validation or requirement imposed on it.
 
-Error handling is currently implemented with try catch blocks. All implemented backend API has been tested with Postman even if not utilized in frontend e.g. the progress upsert. Further leveraging LLMs for development would also be an improvement.
+Error handling is currently implemented with try catch blocks. All implemented backend API has been tested with Postman even if not utilized in frontend e.g. the progress upsert.
 
 ![screenshot](README_img/postman.png)
 
-Improvement would involve allowing students to be able to mark which content they have finished, and having a separate my content page leveraging the currently underutilized saved resources table. Also designing a more visually appealing frontend. The REST API to fetch resources currently uses ids; in the future, having a query mode to check titles would be more useful to frontend users.
+Improvement would involve allowing students to be able to mark which content they have finished, and having a separate my content page leveraging the currently underutilized saved resources table. Also designing a more visually appealing frontend. The REST API to fetch resources currently uses ids; in the future, having a query mode to check titles would be more useful to frontend users. ChatGPT was used for development, and further leveraging LLMs for development would also be an improvement.
