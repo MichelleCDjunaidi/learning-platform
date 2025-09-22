@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../axiosConfig";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,7 +11,7 @@ function Dashboard({ token }) {
   const headers = { Authorization: `Bearer ${token}` };
 
   const createResource = async () => {
-    const res = await axios.post(
+    const res = await api.post(
       `${API_URL}/api/resources`,
       { title, url, source: `manual` },
       { headers }
@@ -20,12 +20,12 @@ function Dashboard({ token }) {
   };
 
   const listResources = async () => {
-    const res = await axios.get(`${API_URL}/api/resources/`, { headers });
+    const res = await api.get(`${API_URL}/api/resources/`, { headers });
     setResults(res.data || []);
   };
 
   const saveYoutubeVideo = async (videoId, title) => {
-    await axios.post(
+    await api.post(
       `${API_URL}/api/resources`,
       {
         title,
@@ -38,10 +38,14 @@ function Dashboard({ token }) {
   };
 
   const youtubeSearch = async () => {
-    const res = await axios.get(`${API_URL}/api/external/youtube?q=${title}`, {
+    const res = await api.get(`${API_URL}/api/external/youtube?q=${title}`, {
       headers,
     });
-    setResults(res.data.results || []);
+    try {
+      setResults(res.data.results || []);
+    } catch (err) {
+      alert("Youtube search currently unavailable, please retry later");
+    }
   };
 
   return (
@@ -58,7 +62,7 @@ function Dashboard({ token }) {
         onChange={(e) => setUrl(e.target.value)}
       />
       <button onClick={createResource}>Create Resource</button>
-      <button onClick={listResources}>List My Resources</button>
+      <button onClick={listResources}>List Resources</button>
       <button onClick={youtubeSearch}>Search YouTube</button>
 
       <h3>Results</h3>
