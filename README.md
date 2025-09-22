@@ -67,3 +67,67 @@ npm run dev
 ```
 
 Frontend will run on http://localhost:5173.
+
+## **Architecture Overview**
+
+The learning platform is built as a Single Page Application (SPA) with a React frontend and Node.js + Express backend, connected to a PostgreSQL database. The system is designed to allow students to search for learning resources on Youtube, save them to their profile, and track their progress.
+
+### Key Design Decisions
+
+1. Backend (Node.js + Express)
+
+RESTful API design for clear separation of resources and actions. Endpoints are named after their uses e.g. /api/auth, /api/external, /api/users with some API developed for future development. Authentication uses JWT with stateless session management for scalability.
+
+2. Database (PostgreSQL)
+
+Relational schema supports users, resources, and saved_resources.
+
+3. Frontend (React + Vite)
+
+Axios handles API requests and JWT-based authentication headers. State is managed locally with React hooks for search results, saved resources, and user session.
+
+### System Flow
+
+1. User Authentication
+
+User registers or logs in via `/api/auth` endpoints. Server returns a JWT; frontend stores it in localStorage.
+
+2. Resource Discovery & Search
+
+Users search external resources (in this case, YouTube) via /api/external/youtube. Backend fetches from YouTube, formats results, and returns JSON.
+
+Users can also see current resources via /api/resources which queries the database.
+
+3. Saving Resources
+
+If user finds a video they like, they can save it, triggering a POST request. Backend inserts the resource into the global resources table (if not already present) and links it to the user in saved_resources.
+
+Users can also manually add content by putting in title and URL to the bar and clicking Create Resource, which allows other users to see the content.
+
+## **Technology Choice**
+
+Node.js + Express was used because full-stack JavaScript enables consistent language across frontend and backend. Express provides lightweight REST API routing and middleware support for authentication, logging, and CORS. Considered Flask but decided to go with PERN for simplicity.
+
+PostgreSQL was used because it is scalable for future work and has relational structure fits well for users, resources, and saved_resources. MongoDB was considered as an alternative due to flexibility but ultimately it's harder to enforce relational constraints.
+
+React (with Vite) was used due to maturity of ecosystem compared to Vue, with large ecosystem and community support for libraries like React Router and Axios. Future work can use components to simplify and standardize visual language, and can also pivot to Typescript for easier bug checks.
+
+Youtube API was chosen as the external API to integrate due to prevalence of everyone using Youtube to learn nowadays, and the API's good documentation.
+
+## **Integration Strategy with Youtube**
+
+The user has to be logged in with a non-expired token to even search Youtube videos. If user login has expired, the user will be redirected to the login page. If the fetching fails e.g. due to quota limits, it will show an error to the user.
+
+## **Critical Analysis**
+
+The frontend works for core functionality like search for learning resources on Youtube, save them to their profile, and track content they like. The token allows users to keep their session for a determined amount of time. Hash is employed for user passwords so it's not stored in plaintext.
+
+Database currently doesn't save YouTube thumbnails to cut down on storage costs and improve speed. As a result, the saved resources shows title and url but not thumbnail. However this is a tradeoff as a lot of students are visual learners, an improvement UX wise might be to store thumbnails.
+
+List Resources currently shows crowdsourced resources e.g. what other students find useful will also be shown to current user.
+
+Some APIs like the progress API is currently un-implemented in the frontend, reserved for future development. Password currently has no validation or requirement imposed on it.
+
+Error handling is currently implemented with try catch blocks. All implemented backend API has been tested with Postman even if not utilized in frontend e.g. the progress upsert.
+
+Improvement would involve allowing students to be able to mark which content they have finished, and having a separate my content page leveraging the currently underutilized saved resources table. Also designing a more visually appealing frontend. The REST API to fetch resources currently uses ids; in the future, having a query mode to check titles would be more useful to frontend users.
