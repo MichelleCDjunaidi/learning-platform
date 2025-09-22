@@ -96,11 +96,18 @@ User registers or logs in via `/api/auth` endpoints. Server returns a JWT; front
 
 Users search external resources (in this case, YouTube) via /api/external/youtube. Backend fetches from YouTube, formats results, and returns JSON.
 
+![screenshot](README_img/YT_search.png)
+
 Users can also see current resources via /api/resources which queries the database.
+
+![screenshot](README_img/list.png)
 
 3. Saving Resources
 
 If user finds a video they like, they can save it, triggering a POST request. Backend inserts the resource into the global resources table (if not already present) and links it to the user in saved_resources.
+
+![screenshot](README_img/save_0.png)
+![screenshot](README_img/save_1.png)
 
 Users can also manually add content by putting in title and URL to the bar and clicking Create Resource, which allows other users to see the content.
 
@@ -126,8 +133,10 @@ Database currently doesn't save YouTube thumbnails to cut down on storage costs 
 
 List Resources currently shows crowdsourced resources e.g. what other students find useful will also be shown to current user.
 
-Some APIs like the progress API is currently un-implemented in the frontend, reserved for future development. Password currently has no validation or requirement imposed on it.
+Some APIs like the progress API is currently not utilized in the frontend, reserved for future development. Password currently has no validation or requirement imposed on it.
 
-Error handling is currently implemented with try catch blocks. All implemented backend API has been tested with Postman even if not utilized in frontend e.g. the progress upsert.
+Error handling is currently implemented with try catch blocks. All implemented backend API has been tested with Postman even if not utilized in frontend e.g. the progress upsert. Further leveraging LLMs for development would also be an improvement.
+
+![screenshot](README_img/postman.png)
 
 Improvement would involve allowing students to be able to mark which content they have finished, and having a separate my content page leveraging the currently underutilized saved resources table. Also designing a more visually appealing frontend. The REST API to fetch resources currently uses ids; in the future, having a query mode to check titles would be more useful to frontend users.
